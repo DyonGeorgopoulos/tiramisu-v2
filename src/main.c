@@ -40,9 +40,9 @@ SDL_AppResult SDL_AppInit(void **appstate, int argc, char *argv[])
 
     // 800x450 is 16:9
     window = SDL_CreateWindow(
-        "TIRAMISU",                              // window title
-        1920,                                     // width, in pixels
-        1080,                                     // height, in pixels
+        "TIRAMISU",       // window title
+        1920,             // width, in pixels
+        1080,             // height, in pixels
         SDL_WINDOW_OPENGL // flags - see below
     );
     if (window == NULL)
@@ -89,10 +89,9 @@ SDL_AppResult SDL_AppInit(void **appstate, int argc, char *argv[])
     g_state.pass_action = (sg_pass_action){
         .colors[0] = {.load_action = SG_LOADACTION_CLEAR, .clear_value = {1.0f, 1.0f, 1.0f, 1.0f}}};
 
-
     // GAME RELATED FOR NOW
 
-    // initialise the map 
+    // initialise the map
     init_map("../../res/map.json");
 
     // return success!
@@ -115,7 +114,7 @@ SDL_AppResult SDL_AppEvent(void *appstate, SDL_Event *event)
             return SDL_APP_SUCCESS;
         }
     case SDL_EVENT_WINDOW_PIXEL_SIZE_CHANGED:
-    // this needs to be done to handle resizes. I think context needs to be nuked and swapchains created again
+        // this needs to be done to handle resizes. I think context needs to be nuked and swapchains created again
         break;
     default:
         break;
@@ -140,12 +139,9 @@ SDL_AppResult SDL_AppIterate(void *appstate)
     sgp_clear();
     sgp_reset_color();
 
-    //sgp_set_color(1, 1, 0.3f, 1.0f);
-    //sgp_draw_filled_rect(width/2, height/2, 50.0f, 50.0f);
-
     render_map();
     sg_begin_pass(&(sg_pass){.action = g_state.pass_action, .swapchain = d3d11_swapchain()});
-    
+
     // Dispatch all draw commands to Sokol GFX.
     sgp_flush();
     // Finish a draw command queue, clearing it.

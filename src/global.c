@@ -3,11 +3,13 @@
 
 struct State g_state = {0};
 
-sg_image load_image(const char *filename) {
+sg_image load_image(const char *filename)
+{
     int width, height, channels;
-    uint8_t* data = stbi_load(filename, &width, &height, &channels, 4);
+    uint8_t *data = stbi_load(filename, &width, &height, &channels, 4);
     sg_image img = {SG_INVALID_ID};
-    if (!data) {
+    if (!data)
+    {
         return img;
     }
     sg_image_desc image_desc = {0};
