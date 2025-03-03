@@ -37,7 +37,6 @@ endif()
 # add headers to the the file list because they are useful to have in IDEs
 set(SOKOL_HEADERS
     sokol/sokol_gfx.h
-    sokol/sokol_app.h
     sokol/sokol_imgui.h
     sokol/sokol_glue.h
     sokol/sokol_gp.h)
@@ -72,7 +71,10 @@ option(IMGUI_STATIC "" ON)
 add_executable(${PROJECT_NAME})
 target_sources(
   ${PROJECT_NAME}
-  PRIVATE src/main.c)
+  PRIVATE src/main.c
+          src/map.c
+          src/global.c
+          sokol/sokol.c)
 
 # set the include directory
 target_include_directories(tiramisu PUBLIC ${SDL3_INCLUDE_DIRS} include)

@@ -1,7 +1,6 @@
 #include <stdio.h>
 
-#define SOKOL_IMPL
-
+#define STB_IMAGE_IMPLEMENTATION
 #ifdef SOKOL_EXPERIMENT_GL
 #define SOKOL_GLCORE33
 #include <glad/gl.h>
@@ -26,21 +25,10 @@
 
 #include "shader.glsl.h"
 #include "sokol-sdl-graphics-backend.h"
+#include "global.h"
 
 static SDL_Window *window = NULL;
 static SDL_Renderer *renderer = NULL;
-
-struct State
-{
-    sg_pass_action pass_action;
-    sg_image image;
-    sg_pipeline pip;
-    sg_shader shd;
-    sg_sampler linear_sampler;
-    struct Entity *entities;
-};
-
-struct State g_state = {0};
 
 SDL_AppResult SDL_AppInit(void **appstate, int argc, char *argv[])
 {
