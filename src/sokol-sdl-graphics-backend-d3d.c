@@ -125,8 +125,8 @@ bool create_device_d3d(HWND h_wnd)
 {
   DXGI_SWAP_CHAIN_DESC sd = {0};
   sd.BufferCount = 2;
-  sd.BufferDesc.Width = 1920;
-  sd.BufferDesc.Height = 1080;
+  sd.BufferDesc.Width = 320;
+  sd.BufferDesc.Height = 180;
   sd.BufferDesc.Format = DXGI_FORMAT_B8G8R8A8_UNORM;
   sd.BufferDesc.RefreshRate.Numerator = 60;
   sd.BufferDesc.RefreshRate.Denominator = 1;

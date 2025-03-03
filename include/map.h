@@ -7,6 +7,7 @@
 #include "sokol_gp.h"
 #include "global.h"
 #include "shader.glsl.h"
+#include <SDL3/SDL.h>
 
 
 typedef struct Texture {

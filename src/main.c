@@ -89,6 +89,12 @@ SDL_AppResult SDL_AppInit(void **appstate, int argc, char *argv[])
     g_state.pass_action = (sg_pass_action){
         .colors[0] = {.load_action = SG_LOADACTION_CLEAR, .clear_value = {1.0f, 1.0f, 1.0f, 1.0f}}};
 
+
+    // GAME RELATED FOR NOW
+
+    // initialise the map 
+    init_map("../../res/map.json");
+
     // return success!
     return SDL_APP_CONTINUE;
 }
@@ -134,9 +140,10 @@ SDL_AppResult SDL_AppIterate(void *appstate)
     sgp_clear();
     sgp_reset_color();
 
-    sgp_set_color(1, 1, 0.3f, 1.0f);
-    sgp_draw_filled_rect(width/2, height/2, 50.0f, 50.0f);
+    //sgp_set_color(1, 1, 0.3f, 1.0f);
+    //sgp_draw_filled_rect(width/2, height/2, 50.0f, 50.0f);
 
+    render_map();
     sg_begin_pass(&(sg_pass){.action = g_state.pass_action, .swapchain = d3d11_swapchain()});
     
     // Dispatch all draw commands to Sokol GFX.

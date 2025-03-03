@@ -59,10 +59,10 @@ void render_map() {
         };
         sgp_draw_textured_rect(1, dst, src);
         sgp_reset_image(IMG_sgp_iTexChannel0);
-        // sgp_reset_sampler(SMP_sgp_iSmpChannel0);
+
         sgp_reset_pipeline();
         sgp_reset_color();
-        // SDL_RenderTexture(renderer, texture_to_use->texture, &src, &dst);
+
       }
     }
   
@@ -102,7 +102,7 @@ void init_map(const char* map_path) {
 
         if (sg_query_image_state(current_texture->texture) != SG_RESOURCESTATE_VALID) {
             fprintf(stderr, "failed to load map texture for tileset");
-            continue;
+            exit(1);
         } 
 
         current_texture->firstgid = tileset->firstgid;
