@@ -1,0 +1,115 @@
+cmake_minimum_required(VERSION 3.30)
+cmake_policy(SET CMP0135 NEW)
+project(tiramisu LANGUAGES C CXX)
+
+set(CMAKE_C_STANDARD 23)
+
+# Include the command that downloads libraries
+include(FetchContent)
+
+# define a function for adding git dependencies
+function(include_dependency libName gitURL gitTag)
+    # setup the declare
+    FetchContent_Declare(${libName}
+            GIT_REPOSITORY ${gitURL}
+            GIT_TAG        ${gitTag}
+            GIT_SHALLOW    TRUE
+            GIT_PROGRESS   TRUE
+    )
+
+    FetchContent_MakeAvailable(${libName})
+endfunction()
+
+# add SDL3 support
+find_package(SDL3 QUIET)
+if (NOT SDL3_FOUND)
+    message(STATUS "Getting SDL3 from Github")
+    include_dependency(SDL3 https://github.com/libsdl-org/SDL.git release-3.2.0)
+else()
+    message(STATUS "Using local SDL3")
+endif()
+
+# sokol 
+#message(STATUS "Getting sokol from Github")
+#include_dependency(sokol https://github.com/floooh/sokol.git 123f30c5166f65844a201246d244bda83ddf5f69)
+# FetchContent_MakeAvailable(sokol)
+#=== LIBRARY: sokol
+# add headers to the the file list because they are useful to have in IDEs
+set(SOKOL_HEADERS
+    sokol/sokol_gfx.h
+    sokol/sokol_app.h
+    sokol/sokol_imgui.h
+    sokol/sokol_glue.h
+    sokol/sokol_gp.h)
+if(CMAKE_SYSTEM_NAME STREQUAL Darwin)
+    add_library(sokol STATIC sokol/sokol.c ${SOKOL_HEADERS})
+    target_compile_options(sokol PRIVATE -x objective-c)
+    target_link_libraries(sokol PUBLIC
+        "-framework QuartzCore"
+        "-framework Cocoa"
+        "-framework MetalKit"
+        "-framework Metal")
+else()
+    add_library(sokol STATIC sokol/sokol.c ${SOKOL_HEADERS})
+    if (CMAKE_SYSTEM_NAME STREQUAL Linux)
+        target_link_libraries(sokol INTERFACE X11 Xi Xcursor GL dl m)
+        target_link_libraries(sokol PUBLIC Threads::Threads)
+    endif()
+endif()
+# target_link_libraries(sokol PUBLIC cimgui)
+target_include_directories(sokol INTERFACE sokol)
+
+# cimgui -- this needs work as sdl3 bindings are (shrug) atm.
+message(STATUS "Getting cimgui from Github")
+include_dependency(cimgui https://github.com/cimgui/cimgui.git 429ffc930d63004618790680a86b6f0f1359c72b)
+
+#as c math
+message(STATUS "Getting as-c-math from Github")
+include_dependency(as-c-math https://github.com/pr0g/as-c-math.git 024955c7538d56272c696c4b2d0cdd681b9d0d50)
+
+option(IMGUI_STATIC "" ON)
+
+add_executable(${PROJECT_NAME})
+target_sources(
+  ${PROJECT_NAME}
+  PRIVATE src/main.c)
+
+# set the include directory
+target_include_directories(tiramisu PUBLIC ${SDL3_INCLUDE_DIRS} include)
+
+target_compile_definitions(
+  ${PROJECT_NAME}
+  PRIVATE $<$<BOOL:${SOKOL_EXPERIMENT_GL}>:SOKOL_EXPERIMENT_GL>
+          $<$<BOOL:${SOKOL_EXPERIMENT_D3D}>:SOKOL_EXPERIMENT_D3D>
+          SDL_MAIN_USE_CALLBACKS)
+
+# link all libraries to the project
+target_link_libraries(tiramisu PRIVATE SDL3::SDL3 sokol as-c-math)
+
+# set compile_commands
+set(CMAKE_EXPORT_COMPILE_COMMANDS ON) # does not produce the json file
+set(CMAKE_EXPORT_COMPILE_COMMANDS ON CACHE INTERNAL "") # works
+
+if(SOKOL_EXPERIMENT_GL)
+  FetchContent_Declare(
+    glad
+    GIT_REPOSITORY https://github.com/Dav1dde/glad.git
+    GIT_TAG 7acc116b06f40508b82fd90fc58d181be7e65452
+    SOURCE_SUBDIR cmake)
+  FetchContent_MakeAvailable(glad)
+  list(APPEND CMAKE_MODULE_PATH ${glad_SOURCE_DIR})
+  glad_add_library(glad_gl_core_33 REPRODUCIBLE API gl:core=3.3)
+  target_link_libraries(${PROJECT_NAME} PRIVATE glad_gl_core_33)
+  target_sources(${PROJECT_NAME} PRIVATE src/sokol-sdl-graphics-backend-gl.c)
+elseif(SOKOL_EXPERIMENT_D3D)
+  target_link_libraries(${PROJECT_NAME} PRIVATE dxguid.lib)
+  target_sources(${PROJECT_NAME} PRIVATE src/sokol-sdl-graphics-backend-d3d.c)
+endif()
+
+if (WIN32)
+    add_custom_command(
+            TARGET tiramisu POST_BUILD
+            COMMAND "${CMAKE_COMMAND}" -E copy_if_different "$<TARGET_FILE:SDL3::SDL3>" "$<TARGET_FILE_DIR:tiramisu>"
+            VERBATIM
+    )
+endif()

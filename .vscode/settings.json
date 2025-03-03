@@ -1,0 +1,19 @@
+{
+    "files.associations": {
+        "imgui_impl_sdl.h": "c",
+        "chrono": "c",
+        "sokol_gfx.h": "c",
+        "ratio": "c",
+        "xiosbase": "c",
+        "sokol_log.h": "c",
+        "sdl.h": "c",
+        "d3d11.h": "c",
+        "d3d11entry.h": "c",
+        "windows.h": "c",
+        "sokol-sdl-graphics-backend.h": "c",
+        "shader.glsl.h": "c",
+        "sokol_gp.h": "c",
+        "sdl_main.h": "c"
+    },
+    "C_Cpp.errorSquiggles": "disabled"
+}
