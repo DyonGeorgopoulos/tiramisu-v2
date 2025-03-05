@@ -17,7 +17,23 @@
         "global.h": "c",
         "stb_image.h": "c",
         "map.h": "c",
-        "cute_tiled.h": "c"
+        "cute_tiled.h": "c",
+        "entity.h": "c",
+        "iosfwd": "cpp",
+        "xlocbuf": "cpp",
+        "update.h": "c",
+        "common.h": "c",
+        "iterate.h": "c",
+        "render.h": "c",
+        "camera.h": "c",
+        "charconv": "c",
+        "format": "c",
+        "xhash": "c",
+        "xlocnum": "c",
+        "xmemory": "c",
+        "player.h": "c",
+        "sstream": "c",
+        "xutility": "cpp"
     },
     "C_Cpp.errorSquiggles": "disabled"
 }

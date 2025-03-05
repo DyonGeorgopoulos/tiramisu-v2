@@ -128,7 +128,7 @@ bool create_device_d3d(HWND h_wnd)
   sd.BufferDesc.Width = 320;
   sd.BufferDesc.Height = 180;
   sd.BufferDesc.Format = DXGI_FORMAT_B8G8R8A8_UNORM;
-  sd.BufferDesc.RefreshRate.Numerator = 60;
+  sd.BufferDesc.RefreshRate.Numerator = 144;
   sd.BufferDesc.RefreshRate.Denominator = 1;
   sd.BufferUsage = DXGI_USAGE_RENDER_TARGET_OUTPUT;
   sd.OutputWindow = h_wnd;

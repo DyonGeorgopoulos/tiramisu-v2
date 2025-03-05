@@ -20,6 +20,20 @@ function(include_dependency libName gitURL gitTag)
     FetchContent_MakeAvailable(${libName})
 endfunction()
 
+# add freetype support
+# find_package(Freetype QUIET)
+# if (NOT Freetype_FOUND)
+#     message(STATUS "Getting freetype2 from Github")
+#     include_dependency(Freetype https://github.com/freetype/freetype 5d4e649f740c675426fbe4cdaffc53ee2a4cb954)
+# else()
+#     message(STATUS "using local Freetype")
+# endif()
+
+
+# add cglm support
+message(STATUS "Getting cglm from Github")
+include_dependency(cglm https://github.com/recp/cglm v0.9.6)
+
 # add SDL3 support
 find_package(SDL3 QUIET)
 if (NOT SDL3_FOUND)
@@ -74,6 +88,12 @@ target_sources(
   PRIVATE src/main.c
           src/map.c
           src/global.c
+          src/entity.c
+          src/update.c
+          src/render.c
+          src/iterate.c
+          src/player.c
+          src/camera.c
           sokol/sokol.c)
 
 # set the include directory
@@ -86,7 +106,7 @@ target_compile_definitions(
           SDL_MAIN_USE_CALLBACKS)
 
 # link all libraries to the project
-target_link_libraries(tiramisu PRIVATE SDL3::SDL3 sokol as-c-math)
+target_link_libraries(tiramisu PRIVATE SDL3::SDL3 sokol as-c-math cglm)
 
 # set compile_commands
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON) # does not produce the json file

@@ -3,6 +3,7 @@
 
 #include "stb_image.h"
 #include "sokol_gfx.h"
+#include "sokol_gp.h"
 #define TILE_SIZE 32
 
 

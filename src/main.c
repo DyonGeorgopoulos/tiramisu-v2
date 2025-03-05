@@ -24,14 +24,16 @@
 #include <SDL3/SDL_main.h>
 
 #include "shader.glsl.h"
+#include "entity.h"
 #include "sokol-sdl-graphics-backend.h"
 #include "global.h"
-
-static SDL_Window *window = NULL;
-static SDL_Renderer *renderer = NULL;
+#include "common.h"
 
 SDL_AppResult SDL_AppInit(void **appstate, int argc, char *argv[])
 {
+    AppState* state = SDL_malloc(sizeof(AppState));
+    *appstate = state;
+    
     if (SDL_Init(SDL_INIT_VIDEO) == false)
     {
         SDL_ShowSimpleMessageBox(SDL_MESSAGEBOX_ERROR, "Couldn't initialize SDL!", SDL_GetError(), NULL);
@@ -39,20 +41,20 @@ SDL_AppResult SDL_AppInit(void **appstate, int argc, char *argv[])
     }
 
     // 800x450 is 16:9
-    window = SDL_CreateWindow(
+    state->window = SDL_CreateWindow(
         "TIRAMISU",       // window title
         1920,             // width, in pixels
         1080,             // height, in pixels
         SDL_WINDOW_OPENGL // flags - see below
     );
-    if (window == NULL)
+    if (state->window == NULL)
     {
         SDL_ShowSimpleMessageBox(SDL_MESSAGEBOX_ERROR, "Couldn't create window/renderer!", SDL_GetError(), NULL);
         return SDL_APP_FAILURE;
     }
 
     // initialise d3d11 or opengl backend
-    se_init_backend(window);
+    se_init_backend(state->window);
 
     // create sokol_gfx backend
     const sg_desc desc = se_create_desc();
@@ -89,10 +91,10 @@ SDL_AppResult SDL_AppInit(void **appstate, int argc, char *argv[])
     g_state.pass_action = (sg_pass_action){
         .colors[0] = {.load_action = SG_LOADACTION_CLEAR, .clear_value = {1.0f, 1.0f, 1.0f, 1.0f}}};
 
-    // GAME RELATED FOR NOW
-
     // initialise the map
     init_map("../../res/map.json");
+    init_player();
+    init_camera();
 
     // return success!
     return SDL_APP_CONTINUE;
@@ -101,6 +103,13 @@ SDL_AppResult SDL_AppInit(void **appstate, int argc, char *argv[])
 // This function runs when a new event occurs
 SDL_AppResult SDL_AppEvent(void *appstate, SDL_Event *event)
 {
+    AppState* state = (AppState*) appstate;
+
+    for (int i = 0; i < entities_count; i++) {
+        if (!entities[i].handle_events) continue;
+        entities[i].handle_events(state->delta_time, event);
+    }
+
     switch (event->type)
     {
     case SDL_EVENT_QUIT:
@@ -119,38 +128,6 @@ SDL_AppResult SDL_AppEvent(void *appstate, SDL_Event *event)
     default:
         break;
     }
-
-    // return continue to continue
-    return SDL_APP_CONTINUE;
-}
-
-// This function runs once per frame, and is the heart of the program
-SDL_AppResult SDL_AppIterate(void *appstate)
-{
-    int width, height;
-    SDL_GetWindowSizeInPixels(window, &width, &height);
-    sgp_begin(width, height);
-    sgp_viewport(0, 0, width, height);
-    sgp_set_blend_mode(SGP_BLENDMODE_BLEND);
-    sgp_clear();
-
-    // draw background
-    sgp_set_color(0.0f, 0.0f, 0.0f, 1.0f);
-    sgp_clear();
-    sgp_reset_color();
-
-    render_map();
-    sg_begin_pass(&(sg_pass){.action = g_state.pass_action, .swapchain = d3d11_swapchain()});
-
-    // Dispatch all draw commands to Sokol GFX.
-    sgp_flush();
-    // Finish a draw command queue, clearing it.
-    sgp_end();
-    // End render pass.
-    sg_end_pass();
-    // Commit Sokol render.
-    sg_commit();
-    se_present(window);
 
     // return continue to continue
     return SDL_APP_CONTINUE;

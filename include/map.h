@@ -6,8 +6,10 @@
 #include "sokol_gfx.h"
 #include "sokol_gp.h"
 #include "global.h"
+#include "entity.h"
 #include "shader.glsl.h"
 #include <SDL3/SDL.h>
+
 
 
 typedef struct Texture {
@@ -20,7 +22,7 @@ typedef struct Texture {
   struct Texture* next;
 } Texture;
 
-void render_map();
+static void render();
 void init_map(const char* map_path);
 
 #endif
