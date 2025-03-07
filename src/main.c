@@ -14,11 +14,12 @@
 #include "sokol_log.h"
 #include "sokol_gp.h"
 
-// #include "../imgui/imgui_impl_sdl3.h"
+#include "../imgui/imgui_impl_sdl3.h"
 
-// #define SOKOL_IMGUI_NO_SOKOL_APP
-// #define SOKOL_IMGUI_IMPL
-// #include <util/sokol_imgui.h>
+#define SOKOL_IMGUI_NO_SOKOL_APP
+#define SOKOL_IMGUI_IMPL
+//#include "cimgui.h"
+#include "sokol_imgui.h"
 
 #include <SDL3/SDL.h>
 #include <SDL3/SDL_main.h>
@@ -29,6 +30,16 @@
 #include "global.h"
 #include "common.h"
 
+
+/* TODO:
+- GET IMGUI WORKING
+- LOAD_TEXTURE FUNC
+- SOME STRUCT TO INITIALISE ENTITIES
+- SOME FUNCTION TO CREATE AN ENTITY AND PASS IT TO GLOBAL ENTITY ARRAY
+- ENTITY ARRAY SHOULD HAVE SUB ARRAYS. FOR EXAMPLE THE MAP, SHOULD BE IN THE OVERARCHING ENTITY ARRAY + HAVE ITS OWN ENTITY SLOT FOR EACH ELEMENT IN THE TILESET OR SOME OTHER STRUCT
+
+
+*/
 SDL_AppResult SDL_AppInit(void **appstate, int argc, char *argv[])
 {
     AppState* state = SDL_malloc(sizeof(AppState));

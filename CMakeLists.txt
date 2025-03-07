@@ -98,6 +98,7 @@ target_sources(
 
 # set the include directory
 target_include_directories(tiramisu PUBLIC ${SDL3_INCLUDE_DIRS} include)
+target_link_libraries(sokol PUBLIC cimgui)
 
 target_compile_definitions(
   ${PROJECT_NAME}
@@ -106,7 +107,7 @@ target_compile_definitions(
           SDL_MAIN_USE_CALLBACKS)
 
 # link all libraries to the project
-target_link_libraries(tiramisu PRIVATE SDL3::SDL3 sokol as-c-math cglm)
+target_link_libraries(tiramisu PRIVATE SDL3::SDL3 sokol as-c-math cglm cimgui)
 
 # set compile_commands
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON) # does not produce the json file

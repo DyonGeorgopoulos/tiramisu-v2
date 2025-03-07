@@ -45,7 +45,6 @@ static void render()
     // this entire function will need to update so that tiles can be updated.
     cute_tiled_layer_t *temp_layer = layer;
 
-    sgp_set_pipeline(g_state.pip);
     sgp_set_sampler(SMP_sgp_iSmpChannel0, g_state.linear_sampler);
 
     while (temp_layer)
@@ -94,8 +93,8 @@ static void render()
                     map->tileheight};
 
                 sgp_rect dst = {
-                    floor(j * map->tilewidth - camera.x),
-                    floor(i * map->tileheight - camera .y),
+                    floor(j * map->tilewidth),
+                    floor(i * map->tileheight),
                     map->tilewidth,
                     map->tileheight};
                 sgp_draw_textured_rect(1, dst, src);
@@ -107,7 +106,6 @@ static void render()
         temp_layer = temp_layer->next;
     }
 
-    sgp_reset_pipeline();
     sgp_reset_sampler(SMP_sgp_iSmpChannel0);
 }
 
@@ -132,8 +130,8 @@ void init_map(const char *map_path)
         .min_filter = SG_FILTER_NEAREST,
         .mag_filter = SG_FILTER_NEAREST,
         .mipmap_filter = SG_FILTER_NEAREST,
-        .wrap_u = SG_WRAP_CLAMP_TO_EDGE,
-        .wrap_v = SG_WRAP_CLAMP_TO_EDGE};
+        .wrap_u = SG_WRAP_MIRRORED_REPEAT,
+        .wrap_v = SG_WRAP_MIRRORED_REPEAT};
 
     g_state.linear_sampler = sg_make_sampler(&linear_sampler_desc);
     if (sg_query_sampler_state(g_state.linear_sampler) != SG_RESOURCESTATE_VALID)

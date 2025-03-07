@@ -1,10 +1,11 @@
 #include "camera.h"
 
-Camera camera = {0, 0, 320, 180};
+
+Camera camera = {1920/2, 1080/2, 1920, 1080};
 
 static void update(float delta_time) {
-    camera.x =  player_position.x - camera.w / 2;
-    camera.y =  player_position.y - camera.h / 2;
+    //camera.x =  player_position.x - camera.w / 2;
+    //camera.y =  player_position.y - camera.h / 2;
   
     if (camera.x < 0) camera.x = 0;
     if (camera.y < 0) camera.y = 0;

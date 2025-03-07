@@ -125,8 +125,8 @@ bool create_device_d3d(HWND h_wnd)
 {
   DXGI_SWAP_CHAIN_DESC sd = {0};
   sd.BufferCount = 2;
-  sd.BufferDesc.Width = 320;
-  sd.BufferDesc.Height = 180;
+  sd.BufferDesc.Width = 1920;
+  sd.BufferDesc.Height = 1080;
   sd.BufferDesc.Format = DXGI_FORMAT_B8G8R8A8_UNORM;
   sd.BufferDesc.RefreshRate.Numerator = 144;
   sd.BufferDesc.RefreshRate.Denominator = 1;
@@ -184,8 +184,8 @@ void create_render_target(void)
   ID3D11Texture2D_Release(back_buffer);
 
   D3D11_TEXTURE2D_DESC ds_desc = {
-      .Width = 1920,
-      .Height = 1080,
+      .Width = 3840,
+      .Height = 2160,
       .MipLevels = 1,
       .ArraySize = 1,
       .Format = DXGI_FORMAT_D24_UNORM_S8_UINT,

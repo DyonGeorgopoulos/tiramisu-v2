@@ -33,7 +33,16 @@
         "xmemory": "c",
         "player.h": "c",
         "sstream": "c",
-        "xutility": "cpp"
+        "xutility": "cpp",
+        "vec2.h": "c",
+        "mat4.h": "c",
+        "ios": "cpp",
+        "xlocale": "cpp",
+        "cam.h": "c",
+        "array": "c",
+        "vector": "c",
+        "xstring": "c",
+        "cimgui.h": "c"
     },
     "C_Cpp.errorSquiggles": "disabled"
 }
