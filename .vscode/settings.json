@@ -42,7 +42,9 @@
         "array": "c",
         "vector": "c",
         "xstring": "c",
-        "cimgui.h": "c"
+        "cimgui.h": "c",
+        "cimgui_impl.h": "c",
+        "sokol_imgui.h": "c"
     },
     "C_Cpp.errorSquiggles": "disabled"
 }

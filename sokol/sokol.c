@@ -16,6 +16,6 @@
 #include "sokol_log.h"
 #include "sokol_gp.h"
 #define CIMGUI_DEFINE_ENUMS_AND_STRUCTS
-#include "cimgui.h"
-#define SOKOL_IMGUI_IMPL
+//#include "cimgui.h"
+//#define SOKOL_IMGUI_IMPL
 //#include "sokol_imgui.h"

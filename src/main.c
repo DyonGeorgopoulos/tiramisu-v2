@@ -14,11 +14,13 @@
 #include "sokol_log.h"
 #include "sokol_gp.h"
 
-#include "../imgui/imgui_impl_sdl3.h"
-
+#define CIMGUI_DEFINE_ENUMS_AND_STRUCTS
+//#include "cimgui.h"
+//#include "cimgui_impl.h"
 #define SOKOL_IMGUI_NO_SOKOL_APP
 #define SOKOL_IMGUI_IMPL
-//#include "cimgui.h"
+#include "cimgui.h"
+#include "cimgui_impl.h"
 #include "sokol_imgui.h"
 
 #include <SDL3/SDL.h>
@@ -32,7 +34,6 @@
 
 
 /* TODO:
-- GET IMGUI WORKING
 - LOAD_TEXTURE FUNC
 - SOME STRUCT TO INITIALISE ENTITIES
 - SOME FUNCTION TO CREATE AN ENTITY AND PASS IT TO GLOBAL ENTITY ARRAY
@@ -64,6 +65,7 @@ SDL_AppResult SDL_AppInit(void **appstate, int argc, char *argv[])
         return SDL_APP_FAILURE;
     }
 
+
     // initialise d3d11 or opengl backend
     se_init_backend(state->window);
 
@@ -71,7 +73,7 @@ SDL_AppResult SDL_AppInit(void **appstate, int argc, char *argv[])
     const sg_desc desc = se_create_desc();
     sg_setup(&desc);
 
-    // Initialize Sokol GP, adjust the size of command buffers for your own use.
+    // Initialize Sokol GP.
     sgp_desc sgpdesc = {0};
     sgp_setup(&sgpdesc);
     if (!sgp_is_valid())
@@ -79,6 +81,11 @@ SDL_AppResult SDL_AppInit(void **appstate, int argc, char *argv[])
         fprintf(stderr, "Failed to create Sokol GP context: %s\n", sgp_get_error_message(sgp_get_last_error()));
         exit(-1);
     }
+
+    // INITIALISE SIMGUI -> PROBABLY SHOULD ALTER THIS DESC
+    simgui_setup(&(simgui_desc_t){.ini_filename = "imgui.ini"});
+    igCreateContext(NULL);
+    se_init_imgui(state->window);
 
     // initialize shader
     g_state.shd = sg_make_shader(sgp_program_shader_desc(sg_query_backend()));
@@ -121,6 +128,7 @@ SDL_AppResult SDL_AppEvent(void *appstate, SDL_Event *event)
         entities[i].handle_events(state->delta_time, event);
     }
 
+    ImGui_ImplSDL3_ProcessEvent(event);
     switch (event->type)
     {
     case SDL_EVENT_QUIT:
@@ -135,6 +143,9 @@ SDL_AppResult SDL_AppEvent(void *appstate, SDL_Event *event)
         }
     case SDL_EVENT_WINDOW_PIXEL_SIZE_CHANGED:
         // this needs to be done to handle resizes. I think context needs to be nuked and swapchains created again
+        break;
+    case SDL_EVENT_MOUSE_WHEEL:
+        mouse_wheel_event(event->wheel);
         break;
     default:
         break;

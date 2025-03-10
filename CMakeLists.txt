@@ -43,11 +43,8 @@ else()
     message(STATUS "Using local SDL3")
 endif()
 
-# sokol 
-#message(STATUS "Getting sokol from Github")
-#include_dependency(sokol https://github.com/floooh/sokol.git 123f30c5166f65844a201246d244bda83ddf5f69)
-# FetchContent_MakeAvailable(sokol)
-#=== LIBRARY: sokol
+
+# === LIBRARY: sokol ===
 # add headers to the the file list because they are useful to have in IDEs
 set(SOKOL_HEADERS
     sokol/sokol_gfx.h
@@ -72,9 +69,55 @@ endif()
 # target_link_libraries(sokol PUBLIC cimgui)
 target_include_directories(sokol INTERFACE sokol)
 
+# === LIBRARY: cimgui ===
 # cimgui -- this needs work as sdl3 bindings are (shrug) atm.
-message(STATUS "Getting cimgui from Github")
-include_dependency(cimgui https://github.com/cimgui/cimgui.git 429ffc930d63004618790680a86b6f0f1359c72b)
+if (EXISTS ${CMAKE_CURRENT_SOURCE_DIR}/cimgui/imgui/backends)
+  set(BACKENDS_FOLDER "cimgui/imgui/backends/")
+else()
+  set(BACKENDS_FOLDER "cimgui/imgui/examples/")
+endif()
+
+if (EXISTS  ${CMAKE_CURRENT_SOURCE_DIR}/cimgui/imgui/imgui_tables.cpp)
+  set(TABLES_SOURCE "cimgui/imgui/imgui_tables.cpp")
+else()
+  set(TABLES_SOURCE "")
+endif()
+
+include_directories(cimgui/imgui)
+include_directories(cimgui)
+add_definitions("-DIMGUI_USER_CONFIG=\"../cimconfig.h\"")
+add_definitions("-DIMGUI_DISABLE_OBSOLETE_FUNCTIONS=1")
+
+set(IMGUI_SOURCES
+  cimgui/cimgui.cpp 
+  cimgui/imgui/imgui.cpp 
+  cimgui/imgui/imgui_draw.cpp 
+  cimgui/imgui/imgui_demo.cpp 
+  cimgui/imgui/imgui_widgets.cpp
+  ${TABLES_SOURCE})
+
+set(IMGUI_SOURCES_sdl)
+set(IMGUI_LIBRARIES)
+
+if (WIN32)
+    add_definitions("-DIMGUI_IMPL_API=extern \"C\" __declspec\(dllexport\)")
+else(WIN32)
+    add_definitions("-DIMGUI_IMPL_API=extern \"C\" ")
+endif(WIN32)
+
+add_compile_definitions("IMGUI_IMPL_OPENGL_LOADER_GL3W")
+
+#opengl3
+list(APPEND IMGUI_SOURCES ${BACKENDS_FOLDER}imgui_impl_opengl3.cpp)
+include_directories(cimgui/imgui/examples/libs/gl3w)
+if(WIN32)
+       list(APPEND IMGUI_LIBRARIES opengl32)
+else(WIN32)#Unix
+       list(APPEND IMGUI_LIBRARIES GL)
+endif(WIN32)
+
+list(APPEND IMGUI_SOURCES ${BACKENDS_FOLDER}imgui_impl_sdl3.cpp)
+list(APPEND IMGUI_SOURCES ${BACKENDS_FOLDER}imgui_impl_dx11.cpp)
 
 #as c math
 message(STATUS "Getting as-c-math from Github")
@@ -98,7 +141,7 @@ target_sources(
 
 # set the include directory
 target_include_directories(tiramisu PUBLIC ${SDL3_INCLUDE_DIRS} include)
-target_link_libraries(sokol PUBLIC cimgui)
+
 
 target_compile_definitions(
   ${PROJECT_NAME}
@@ -106,8 +149,16 @@ target_compile_definitions(
           $<$<BOOL:${SOKOL_EXPERIMENT_D3D}>:SOKOL_EXPERIMENT_D3D>
           SDL_MAIN_USE_CALLBACKS)
 
+if (NOT STATIC_BUILD)
+  add_library(cimgui SHARED ${IMGUI_SOURCES})
+  target_include_directories(cimgui PUBLIC ${SDL3_INCLUDE_DIRS})
+  target_link_libraries(cimgui PRIVATE SDL3::SDL3)
+else()
+  add_library(cimgui STATIC ${IMGUI_SOURCES})
+endif()
+
 # link all libraries to the project
-target_link_libraries(tiramisu PRIVATE SDL3::SDL3 sokol as-c-math cglm cimgui)
+target_link_libraries(tiramisu PRIVATE SDL3::SDL3 sokol as-c-math cglm cimgui ${IMGUI_LIBRARIES})
 
 # set compile_commands
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON) # does not produce the json file
@@ -124,9 +175,11 @@ if(SOKOL_EXPERIMENT_GL)
   glad_add_library(glad_gl_core_33 REPRODUCIBLE API gl:core=3.3)
   target_link_libraries(${PROJECT_NAME} PRIVATE glad_gl_core_33)
   target_sources(${PROJECT_NAME} PRIVATE src/sokol-sdl-graphics-backend-gl.c)
+  target_compile_definitions(tiramisu PUBLIC -DCIMGUI_USE_OPENGL3 -DCIMGUI_USE_SDL3)
 elseif(SOKOL_EXPERIMENT_D3D)
   target_link_libraries(${PROJECT_NAME} PRIVATE dxguid.lib)
   target_sources(${PROJECT_NAME} PRIVATE src/sokol-sdl-graphics-backend-d3d.c)
+  target_compile_definitions(tiramisu PUBLIC -DCIMGUI_USE_DX11 -DCIMGUI_USE_SDL3)
 endif()
 
 if (WIN32)

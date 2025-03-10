@@ -4,6 +4,9 @@
 #define SOKOL_NO_DEPRECATED
 #include "sokol_gfx.h"
 #include "sokol_log.h"
+#define SOKOL_IMGUI_NO_SOKOL_APP
+#include "sokol-sdl-graphics-backend.h"
+#include "sokol_imgui.h"
 
 #define COBJMACROS
 #include <d3d11.h>
@@ -89,7 +92,8 @@ sg_swapchain d3d11_swapchain(void)
 
 void se_init_imgui(SDL_Window *window)
 {
-  // ImGui_ImplSDL2_InitForD3D(window);
+  ImGui_ImplSDL3_InitForD3D(window);
+  ImGui_ImplDX11_Init(g_d3d_device, g_d3d_device_context);
 }
 
 as_mat44f se_perspective_projection(

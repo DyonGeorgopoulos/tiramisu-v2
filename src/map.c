@@ -93,8 +93,8 @@ static void render()
                     map->tileheight};
 
                 sgp_rect dst = {
-                    floor(j * map->tilewidth),
-                    floor(i * map->tileheight),
+                    j * map->tilewidth,
+                    i * map->tileheight,
                     map->tilewidth,
                     map->tileheight};
                 sgp_draw_textured_rect(1, dst, src);

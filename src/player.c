@@ -1,9 +1,17 @@
 #include "player.h"
 #include <cglm/vec2.h>
+#define SOKOL_IMGUI_NO_SOKOL_APP
+#include "sokol_gfx.h"
+#include "sokol_imgui.h"
+#include "sokol_gp.h"
 
-Position player_position = {0, 0};
+Position player_position = {0, 0, 6};
+bool should_scale = false;
 static int movement_speed = 100;
 
+static void render() {
+  igSliderInt("Camera movement speed",&movement_speed,0,1000,NULL,0);
+}
 static void cleanup() {
 
 }
@@ -46,8 +54,19 @@ static void update(float delta_time) {
       .name = "player",
       .cleanup = cleanup,
       .handle_events = handle_events,
-      .update = update
+      .update = update,
+      .render = render
     };
   
     create_entity(player);
+}
+
+void mouse_wheel_event(SDL_MouseWheelEvent event) {
+  player_position.scale += event.y * 0.2;
+
+  if (player_position.scale < 1) {
+    player_position.scale = 1;
+  }
+  // we should only sgp_scale on the mousehweel event tbh
+  should_scale = true;
 }
