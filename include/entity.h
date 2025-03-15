@@ -12,6 +12,8 @@ typedef struct {
     void (*handle_events)(float, SDL_Event*);
     void (*update)(float);
     void (*render)(void);
+
+    // entity data based on tile
   } Entity;
   
   extern Entity entities[MAX_ENTITIES];
