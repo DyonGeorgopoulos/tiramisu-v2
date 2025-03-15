@@ -12,9 +12,7 @@ typedef struct {
 } Position;
 
 extern Position player_position;
-extern bool should_scale;
 
 void init_player();
-void mouse_wheel_event(SDL_MouseWheelEvent event);
 
 #endif

@@ -41,7 +41,7 @@ void app_render(void *appstate)
     // if i get mouseX & mouseY, i should need to maybe offset them by (camera.x - camera.w / 2)
     sgp_translate(-(camera.x - camera.w / 2), -(camera.y - camera.h / 2));
     //sgp_scale(player_position.scale, player_position.scale);
-    sgp_scale_at(player_position.scale, player_position.scale, 0, 0);
+    sgp_scale_at(camera.z, camera.z, 0, 0);
 
 
     //sgp_scale(player_position.scale, player_position.scale);
@@ -54,7 +54,7 @@ void app_render(void *appstate)
             continue;
         entities[i].render();
     }
-    igText("Zoom levelL: %f", player_position.scale);
+    igText("Zoom levelL: %f", camera.z);
 
     // could add an entitites IMGUI section.
     // so each entity is in charge of writing it's own stuff, or have a global things can pull debug info out of. Like it all writes to the one, IG_BEGIN and IG_END. 

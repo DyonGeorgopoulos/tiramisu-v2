@@ -10,7 +10,7 @@ static cute_tiled_tileset_t *tileset;
 static Texture *texture;
 static Game_Map *game_map;
 
-static void cleanup()
+static void cleanup(void)
 {
     if (texture)
     {
@@ -50,7 +50,7 @@ static void cleanup()
     }
 }
 
-static void render()
+static void render(void)
 {
     sgp_set_sampler(SMP_sgp_iSmpChannel0, g_state.linear_sampler);
 
@@ -224,6 +224,8 @@ void init_map_array(cute_tiled_map_t* map)
             for (int j = 0; j < map->width; j++)
             {
                 int tile_id = temp_layer->data[i * map->width + j];
+
+                // if theres nothing in that spot, skip!
                 if (tile_id == 0)
                     continue;
 

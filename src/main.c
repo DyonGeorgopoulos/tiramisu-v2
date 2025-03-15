@@ -31,6 +31,7 @@
 #include "sokol-sdl-graphics-backend.h"
 #include "global.h"
 #include "common.h"
+#include "camera.h"
 
 
 /* TODO:

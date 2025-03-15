@@ -6,9 +6,8 @@
 #include "sokol_gp.h"
 
 Position player_position = {0, 0, 6};
-bool should_scale = false;
 
-static void cleanup() {
+static void cleanup(void) {
 
 }
 
@@ -35,14 +34,4 @@ static void update(float delta_time) {
     };
   
     create_entity(player);
-}
-
-void mouse_wheel_event(SDL_MouseWheelEvent event) {
-  player_position.scale += event.y * 0.5;
-
-  if (player_position.scale < 1) {
-    player_position.scale = 1;
-  }
-  // we should only sgp_scale on the mousehweel event tbh
-  should_scale = true;
 }
