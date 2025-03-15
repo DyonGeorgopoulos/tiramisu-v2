@@ -5,7 +5,7 @@ Camera camera = {1920/2, 1080/2, 1920, 1080};
 
 static int movement_speed = 100;
 
-static void render() {
+static void render(void) {
   igSliderInt("Camera movement speed",&movement_speed,0,1000,NULL,0);
 }
 
@@ -37,6 +37,7 @@ static void update(float delta_time) {
       camera.x += movement_speed  * player_position.scale* delta_time;
     }
   
+    // add update code for scale & map_edge here.
     //if (camera.x + camera.w > 450) camera.x = 450 - camera.w;
     //if (camera.y + camera.h > 450) camera.y = 450 - camera.h;
 }
