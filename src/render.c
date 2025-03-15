@@ -37,21 +37,11 @@ void app_render(void *appstate)
 
     // TRANSLATE WORLD
     
-    //IF SCALING THIS FRAME, TRANSLATE TOWARDS THE MOUSE POINTER. NEED TO IMPLEMENT THIS
-    // float mX, mY;
-    // SDL_GetMouseState(&mX, &mY);
-    // if (should_scale) {
-    //     // (current camera position + or - X, & Y coords) account for camera width and height
-    //     sgp_scale_at(player_position.scale, player_position.scale, -mX, -mY);
-    //     camera.x = mX;
-    //     camera.y = mY;
-    //     should_scale = false;
-    // } else {
-    //     sgp_scale(player_position.scale, player_position.scale);
-    // }
+    // to accurately scale the world at the mouse position, we need screen to world. 
+    // if i get mouseX & mouseY, i should need to maybe offset them by (camera.x - camera.w / 2)
     sgp_translate(-(camera.x - camera.w / 2), -(camera.y - camera.h / 2));
-    sgp_scale(player_position.scale, player_position.scale);
-    
+    //sgp_scale(player_position.scale, player_position.scale);
+    sgp_scale_at(player_position.scale, player_position.scale, 0, 0);
 
 
     //sgp_scale(player_position.scale, player_position.scale);
