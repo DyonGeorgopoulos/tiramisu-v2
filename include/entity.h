@@ -2,6 +2,8 @@
 #define ENTITY_H
 
 #include <SDL3/SDL.h>
+#include "sokol_gfx.h"
+#include "sokol_gp.h"
 
 #define MAX_ENTITIES 100
 #define MAX_NAME_LENGTH 64
@@ -12,10 +14,23 @@ typedef struct {
     void (*handle_events)(float, SDL_Event*);
     void (*update)(float);
     void (*render)(void);
-
-    // entity data based on tile
   } Entity;
   
+
+  typedef struct {
+    sg_image texture; // the loaded texture file
+    int tile_size; // the size of each individual tile
+    int[2] object_size; // the number of tiles the object consumes on the image x * y
+    int texture_len; // the size in pixels the texture length is
+    int texture_
+
+  } Game_Entity_Texture;
+  typedef struct {
+    // these live on tiles. Can only be placed on tiles
+    char name[MAX_NAME_LENGTH];
+
+  } GameEntity; 
+
   extern Entity entities[MAX_ENTITIES];
   extern int entities_count;
   

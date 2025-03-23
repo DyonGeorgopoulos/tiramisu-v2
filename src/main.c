@@ -142,11 +142,26 @@ SDL_AppResult SDL_AppEvent(void *appstate, SDL_Event *event)
             // returning success to the OS
             return SDL_APP_SUCCESS;
         }
+        if (event->key.key == SDLK_C)
+        {
+            // do mouse to world
+            float mX, mY;
+            SDL_GetMouseState(&mX, &mY);
+            vec2 dst = {0};
+            screen_to_world(mX, mY, dst);
+            //SDL_Log("X: %f, Y:%f", dst[0], dst[1]);
+            break;
+        }
     case SDL_EVENT_WINDOW_PIXEL_SIZE_CHANGED:
         // this needs to be done to handle resizes. I think context needs to be nuked and swapchains created again
         break;
     case SDL_EVENT_MOUSE_WHEEL:
         mouse_wheel_event(event->wheel);
+        break;
+    case SDL_EVENT_MOUSE_BUTTON_DOWN:
+        if (event->button.button == SDL_BUTTON_LEFT) {
+            should_draw = true;
+        }
         break;
     default:
         break;

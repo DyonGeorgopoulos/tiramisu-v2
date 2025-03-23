@@ -137,6 +137,7 @@ target_sources(
           src/iterate.c
           src/player.c
           src/camera.c
+          src/common.c
           sokol/sokol.c)
 
 # set the include directory

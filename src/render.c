@@ -7,6 +7,8 @@
 #include "sokol-sdl-graphics-backend.h"
 #include "sokol_imgui.h"
 
+vec2 dst = {0};
+
 void app_render(void *appstate)
 {
     AppState *state = (AppState *)appstate;
@@ -40,10 +42,7 @@ void app_render(void *appstate)
     // to accurately scale the world at the mouse position, we need screen to world. 
     // if i get mouseX & mouseY, i should need to maybe offset them by (camera.x - camera.w / 2)
     sgp_translate(-(camera.x - camera.w / 2), -(camera.y - camera.h / 2));
-    //sgp_scale(player_position.scale, player_position.scale);
-    sgp_scale_at(camera.z, camera.z, 0, 0);
-
-
+    sgp_scale(camera.z, camera.z);
     //sgp_scale(player_position.scale, player_position.scale);
     igBegin("Debug Menu", NULL, 0);
 
@@ -54,6 +53,7 @@ void app_render(void *appstate)
             continue;
         entities[i].render();
     }
+
     igText("Zoom levelL: %f", camera.z);
 
     // could add an entitites IMGUI section.

@@ -3,13 +3,14 @@
 #include "camera.h"
 #include <float.h>
 #include <math.h>
+#include "common.h"
 
 static cute_tiled_map_t *map;
 static cute_tiled_layer_t *layer;
 static cute_tiled_tileset_t *tileset;
 static Texture *texture;
 static Game_Map *game_map;
-
+bool should_draw = false;
 static void cleanup(void)
 {
     if (texture)
@@ -66,6 +67,7 @@ static void render(void)
 
         sgp_set_image(IMG_sgp_iTexChannel0, temp_tile.texture_to_use->texture);
 
+        
         sgp_rect src = {
             temp_tile.texture_x, 
             temp_tile.texture_y,
@@ -78,6 +80,20 @@ static void render(void)
             game_map->tile_width,
             game_map->tile_height};
         sgp_draw_textured_rect(1, dst, src);
+
+        if (should_draw) {
+            float mouseX, mouseY;
+            vec2 s2w = {0};
+            SDL_GetMouseState(&mouseX, &mouseY);
+            screen_to_world(mouseX, mouseY, s2w);
+            sgp_rect dst2 = {
+                s2w[0],
+                s2w[1],
+                game_map->tile_width,
+                game_map->tile_height};
+            sgp_draw_textured_rect(1, dst2, src);
+            
+        }
         sgp_reset_image(IMG_sgp_iTexChannel0);
 
         // loop through each layer for each tile and if theres a texture to use
@@ -101,7 +117,6 @@ static void render(void)
                 sgp_reset_image(IMG_sgp_iTexChannel0);
         }
     }
-
     sgp_reset_sampler(SMP_sgp_iSmpChannel0);
 }
 

@@ -12,6 +12,7 @@ typedef struct
 } Camera;
 
 extern Camera camera;
+extern bool should_scale;
 void init_camera();
 void mouse_wheel_event(SDL_MouseWheelEvent event);
 
