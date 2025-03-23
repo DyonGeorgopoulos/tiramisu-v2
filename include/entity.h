@@ -22,7 +22,7 @@ typedef struct {
     int tile_size; // the size of each individual tile
     int[2] object_size; // the number of tiles the object consumes on the image x * y
     int texture_len; // the size in pixels the texture length is
-    int texture_
+    int texture_;
 
   } Game_Entity_Texture;
   typedef struct {
